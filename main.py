@@ -1,4 +1,5 @@
-import numpy as np
+from FeatureImportnace import FeatureImportance, PrevSamples
+from Clustering import Cluster
 
 
 if __name__ == '__main__':
