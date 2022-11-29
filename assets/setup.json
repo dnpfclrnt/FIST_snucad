@@ -1,0 +1,38 @@
+{
+	"CLOCK_PERIOD":{
+		"min": 350,
+		"max": 650,
+		"step": 50
+	}, 
+	"CORE_UTIL":{
+		"min": 350,
+		"max": 650,
+		"step": 50
+	},
+	"set_max_fanout":[8, 16, 32, 64, 200],
+	"set_max_transition":{
+		"min": 80,
+		"max": 320,
+		"step": 40
+	},
+	"set_max_capacitance":{
+		"min": 4,
+		"max": 20,
+		"step": 4
+	},
+	"eco_max_distance":{
+		"min": 5,
+		"max": 20,
+		"step": 1
+	},
+	"max_density":{
+		"min": 0,
+		"max": 100,
+		"step": 20
+	},
+	"wire_length_opt":["none", "medium", "high"],
+	"wire_length_opt":["medium", "high"],
+	"wire_length_opt":["low", "standard", "high"],
+	"wire_length_opt":["low", "medium", "high", "auto"],
+	"wire_length_opt":["true", "false"]
+}

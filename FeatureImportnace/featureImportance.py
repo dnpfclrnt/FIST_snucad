@@ -3,7 +3,7 @@ import json
 import os
 
 
-class Samples:
+class PrevSamples:
     def __init__(self, PPA_json: str, weight: tuple):
         if os.path.isfile(PPA_json):
             raise ValueError("PPA json does not exists")
@@ -14,7 +14,8 @@ class Samples:
         for key in ppa.keys():
             run = ppa[key]
             single_feature = [run["CLOCK_PERIOD"], run["CORE_UTIL"],
-                              run["set_max_fanout"], run["set_max_capacitance"],
+                              run["set_max_fanout"], run["set_max_transition"],
+                              run["set_max_capacitance"],
                               run["eco_max_distance"], run["max_density"],
                               run["wire_length_opt"], run["timing_effort"],
                               run["clock_power_driven"], run["congestion_effort"],
@@ -77,7 +78,7 @@ class Samples:
         sum_var = 0
         for feature in encoded.keys():
             score_arr = np.array(encoded[feature])
-            var = np.var(score_arr)
+            var = float(np.var(score_arr))
             sum_var += pow(var, 2)
         return sum_var
 
@@ -112,6 +113,6 @@ class FeatureImportance:
                 importance.append(var)
             return importance
 
-    def get_samples(self, sample: Samples, mode: str):
+    def get_samples(self, sample: PrevSamples, mode: str):
         self.prev_run = sample
         self.mode = mode
