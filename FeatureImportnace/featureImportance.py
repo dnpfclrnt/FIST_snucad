@@ -18,6 +18,7 @@ class PrevRunParser:
             ppa = json.load(f)
         self.prev_ppa = ppa[target_design]
         self.weight = weight
+        self.prev_runs = []
         for param_str in self.prev_ppa.keys():
             run = self.prev_ppa[param_str]
             param_set = "_".split(param_str)
@@ -28,52 +29,38 @@ class PrevRunParser:
             label.append(wa)
             self.prev_runs.append([param_set, label])
 
-
-
-class PrevSamples:
-    def __init__(self, PPA_json: str, weight: tuple):
-        if os.path.isfile(PPA_json):
-            raise ValueError("PPA json does not exists")
-        with open(PPA_json) as f:
-            ppa = json.load(f)
-        self.prev_runs = []
-        self.weight = weight
-        for key in ppa.keys():
-            run = ppa[key]
-            single_feature = [run["CLOCK_PERIOD"], run["CORE_UTIL"],
-                              run["set_max_fanout"], run["set_max_transition"],
-                              run["set_max_capacitance"],
-                              run["eco_max_distance"], run["max_density"],
-                              run["wire_length_opt"], run["timing_effort"],
-                              run["clock_power_driven"], run["congestion_effort"],
-                              run["uniform_density"]]
-            label = [run["power"], run["perf"], run["area"], run["wirelength"]]
-            wa = weight[0] * label[0]
-            wa += weight[1] * label[1]
-            wa += weight[2] * label[2]
-            label.append(wa)
-            self.prev_runs.append([single_feature, label])
-
-    def encode(self, param_set: list, idx: int):
-        # idx means masking idx
+    def encode(self, param_set: list, idx: int or list):
+        """
+        This method encodes a parameter set with masking
+        :param param_set: a list of parameters
+        :param idx: target index to mask
+        :return: returns a string of parameters in encoded form
+        """
         enc = []
         cur_idx = 0
-        for feature in param_set:
-            if cur_idx != idx:
-                converted = feature
-                if type(feature) is not str:
-                    converted = str(feature)
-                enc.append(converted)
-            idx += 1
+        for param in param_set:
+            converted = param
+            if type(param) is not str:
+                converted = str(param)
+            if type(idx) == list:
+                if cur_idx in idx:
+                    enc.append(converted)
+            elif type(idx) == int:
+                if cur_idx != idx:
+                    enc.append(converted)
+            else:
+                raise TypeError("Idx must be int or list type")
+            cur_idx += 1
         enc = "_".join(enc)
-        return enc, self.prev_runs[idx][1]
+        return enc
 
-    def get_variance(self, idx: int, mode: str):
+    def get_sum_variance(self, idx: int, mode: str):
         """
         This calculates the sum of variance
+        With masking target index, this will calculate the feature importance.
         :param idx: target parameter index
         :param mode: metric. "power", "performance", "area", "all"
-        :return:
+        :return: sum of variances
         """
         mode = mode.lower()
         if mode not in ["power", "performance", "area", "all"]:
@@ -90,18 +77,18 @@ class PrevSamples:
                 elif mode == "performance":
                     encoded[enc].append(run[1][1])
                 elif mode == "area":
-                    encoded[enc].append(run[1][2])
-                elif mode == "all":
                     encoded[enc].append(run[1][3])
+                elif mode == "all":
+                    encoded[enc].append(run[1][-1])
             else:
                 if mode == "power":
                     encoded[enc] = [(run[1][0])]
                 elif mode == "performance":
                     encoded[enc] = [(run[1][1])]
                 elif mode == "area":
-                    encoded[enc] = [(run[1][2])]
-                elif mode == "all":
                     encoded[enc] = [(run[1][3])]
+                elif mode == "all":
+                    encoded[enc] = [(run[1][-1])]
         sum_var = 0
         for feature in encoded.keys():
             score_arr = np.array(encoded[feature])
@@ -111,35 +98,45 @@ class PrevSamples:
 
 
 class FeatureImportance:
-    def __init__(self, prev_data: bool):
+    def __init__(self, PPA_json=None, target_design=None, weight=None,
+                 prev_data=False):
         """
         This will calculate the feature importance
         according to the paper FIST
         :param prev_data: if there is any previous data, it's better to used this as True
         """
         self.prev_data = prev_data
-        # CLOCK_PERIOD, CORE_UTIL, set_max_fanout, set_max_capacitance
-        # eco_max_distance, max_density, wire_length_opt, timing_effort,
-        # clock_power_driven, congestion_effort, uniform_density
         self.default_importance = [5, 5, 5, 5, 4, 4, 5, 4, 4, 3, 5, 4]
+        self.ppa_json = PPA_json
+        self.target_design = target_design
+        self.weight = weight
         self.prev_run = None
         self.mode = None
 
-    def gen_feature_importance(self, sample=None, mode=None):
+    def gen_feature_importance(self, mode=None):
+        """
+        This will generate feature importance of parameters
+        according to previous run
+        :param mode: mode is analysis type mode
+            ["power", "performance", "area", "all"]
+        :return:
+        """
         if self.prev_data is False:
             return self.default_importance
         else:
-            self.get_samples(sample, mode)
+            self.load(mode)
             if self.prev_run is None \
                     or self.mode is None:
                 raise ValueError("There is no previous run")
 
             importance = []
             for i in range(12):
-                var = self.prev_run.get_variance(i, self.mode)
+                var = self.prev_run.get_sum_variance(i, self.mode)
                 importance.append(var)
             return importance
 
-    def get_samples(self, sample: PrevSamples, mode: str):
-        self.prev_run = sample
+    def load(self, mode: str):
+        self.prev_run = PrevRunParser(PPA_json=self.ppa_json,
+                                      target_design=self.target_design,
+                                      weight=self.weight)
         self.mode = mode
