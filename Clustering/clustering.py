@@ -1,4 +1,5 @@
 import json
+import random
 from tqdm import tqdm
 
 
@@ -14,6 +15,24 @@ _timing = "timing_effort"
 _clk_pwr = "clock_power_driven"
 _congest = "congestion_effort"
 _uniform = "uniform_density"
+
+
+class Cluster:
+    def __init__(self, important_feature: list, param_setup: dict):
+        """
+        This is cluster itself.
+        :param important_feature: This saves the value of important features
+        ex) [500, 500, None, None, 80, 4, 5, 20, None, None, None, low, false]
+        :param param_setup:
+        """
+        self.important_feature = important_feature
+        self.param_setup = param_setup
+
+        def random_gen(param: dict or list):
+            if type(param) == dict:
+                return random.randrange(param["min"], param["max"], param["step"])
+            else:
+                return random.sample()
 
 
 class Cluster:

@@ -1,1 +1,1 @@
-from .featureImportance import FeatureImportance, PrevSamples
+from .featureImportance import FeatureImportance

@@ -5,9 +5,9 @@
 		"step": 50
 	}, 
 	"CORE_UTIL":{
-		"min": 350,
-		"max": 650,
-		"step": 50
+		"min": 20,
+		"max": 85,
+		"step": 5
 	},
 	"set_max_fanout":[8, 16, 32, 64, 200],
 	"set_max_transition":{
@@ -31,8 +31,8 @@
 		"step": 20
 	},
 	"wire_length_opt":["none", "medium", "high"],
-	"wire_length_opt":["medium", "high"],
-	"wire_length_opt":["low", "standard", "high"],
-	"wire_length_opt":["low", "medium", "high", "auto"],
-	"wire_length_opt":["true", "false"]
+	"timing_effort":["medium", "high"],
+	"clock_power_driven":["low", "standard", "high"],
+	"congestion_effort":["low", "medium", "high", "auto"],
+	"uniform_density":["true", "false"]
 }
