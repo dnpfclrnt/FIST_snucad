@@ -3,6 +3,33 @@ import json
 import os
 
 
+class PrevRunParser:
+    def __init__(self, PPA_json: str, target_design: str,
+                 weight: tuple):
+        """
+        This class parses previous design
+        :param PPA_json:  A json file that saves PPA from prev designs
+        :param target_design: Design to get transferred from
+        :param weight: weight for PPA. This will be used to calculate scores
+        """
+        if not os.path.isfile(PPA_json):
+            raise ValueError("PPA json file not exists")
+        with open(PPA_json) as f:
+            ppa = json.load(f)
+        self.prev_ppa = ppa[target_design]
+        self.weight = weight
+        for param_str in self.prev_ppa.keys():
+            run = self.prev_ppa[param_str]
+            param_set = "_".split(param_str)
+            label = [run["power"], run["wns"], run["tns"], run["area"], run["wirelength"]]
+            wa = weight[0] * label[0]
+            wa += weight[1] * label[1]
+            wa += weight[2] * label[2]
+            label.append(wa)
+            self.prev_runs.append([param_set, label])
+
+
+
 class PrevSamples:
     def __init__(self, PPA_json: str, weight: tuple):
         if os.path.isfile(PPA_json):
@@ -20,7 +47,7 @@ class PrevSamples:
                               run["wire_length_opt"], run["timing_effort"],
                               run["clock_power_driven"], run["congestion_effort"],
                               run["uniform_density"]]
-            label = [run["power"], run["perf"], run["area"]]
+            label = [run["power"], run["perf"], run["area"], run["wirelength"]]
             wa = weight[0] * label[0]
             wa += weight[1] * label[1]
             wa += weight[2] * label[2]

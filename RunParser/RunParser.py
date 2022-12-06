@@ -4,7 +4,7 @@ import os
 
 class RunParser:
     def __init__(self, result_path: str):
-        self.jspn_path = None
+        self.json_path = None
         if not os.path.isdir(result_path):
             os.mkdir(result_path)
         trial = 0
