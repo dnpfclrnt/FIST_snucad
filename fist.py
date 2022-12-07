@@ -1,5 +1,6 @@
 import os
 import sys
+import numpy as np
 from tqdm import tqdm
 
 from FeatureImportnace import FeatureImportance
@@ -14,6 +15,51 @@ data_dir = "/home/users/cad_data/"
 ppa_filename = "ppa.json"
 CAD_DIR = "/home/users/cjeon7/dso/snucad_placement_runner"
 weight = (0.1, 0.1, 0.1, 0.1, 2)
+none = "none"
+low = "low"
+medium = "medium"
+high = "high"
+standard = "standard"
+true = "true"
+false = "false"
+auto = "auto"
+
+
+def convert_enum_to_str(params: list):
+    for i in range(len(params)):
+        if params[7] == 0:
+            params[7] = none
+        elif params[7] == 1:
+            params[7] = medium
+        else:
+            params[7] = high
+
+        if params[8] == 0:
+            params[8] = medium
+        else:
+            params[8] = high
+
+        if params[9] == 0:
+            params[9] = low
+        elif params[9] == 1:
+            params[9] = standard
+        else:
+            params[9] = high
+
+        if params[10] == 0:
+            params[10] = low
+        elif params[10] == 1:
+            params[10] = medium
+        elif params[10] == 2:
+            params[10] = high
+        else:
+            params[10] = auto
+
+        if params[11] == 0:
+            params[11] = true
+        else:
+            params[11] = false
+    return params
 
 
 class RunCAD:
@@ -139,17 +185,72 @@ class FIST:
         return self.model_less_result
 
     def exploit(self, num_exploit: int):
-        model = Trainer(mode=self.tune_target,
-                        result=self.model_less_result,
-                        weight=weight)
-        model.train()
-        params, clusters = self.cluster_gen.generate_param_set_model_less(num_exploit)
+        clusters = self.cluster_gen.get_random_cluster(num_exploit)
+        for cluster in clusters:
+            model = Trainer(mode=self.tune_target,
+                            result=self.model_less_result,
+                            weight=weight)
+            model.train()
+            param_set = cluster.generate_all()
+            ppa = model.predict(param_set)
+            max_idx = np.argmax(ppa)
+            param = convert_enum_to_str(param_set[max_idx])
+            runner = RunCAD(design=self.tune_design,
+                            CLOCK_PERIOD=param[0],
+                            CORE_UTIL=param[1],
+                            set_max_fanout=param[2],
+                            set_max_transition=param[3],
+                            set_max_capacitance=param[4],
+                            eco_max_distance=param[5],
+                            max_density=param[6],
+                            wire_length_opt=param[7],
+                            timing_effort=param[8],
+                            clock_power_driven=param[9],
+                            congestion_effort=param[10],
+                            uniform_density=param[11])
+            runner.run()
+            self.runParser.update_result(param, ppa)
+            for key in ppa.keys():
+                ppa[key] = float(ppa[key])
+            self.runs[encode(param)] = ppa
+            for feature in param_set:
+                self.model_less_result[encode(feature)] = ppa
+
+    def explore(self, num_explore: int):
+        param_set = self.generate_all_params()
+        for i in range(num_explore):
+            model = Trainer(mode=self.tune_target,
+                            result=self.runs,
+                            weight=weight)
+            model.train()
+            ppa = model.predict(param_set)
+            max_idx = np.argmax(ppa)
+            param = convert_enum_to_str(param_set[max_idx])
+            runner = RunCAD(design=self.tune_design,
+                            CLOCK_PERIOD=param[0],
+                            CORE_UTIL=param[1],
+                            set_max_fanout=param[2],
+                            set_max_transition=param[3],
+                            set_max_capacitance=param[4],
+                            eco_max_distance=param[5],
+                            max_density=param[6],
+                            wire_length_opt=param[7],
+                            timing_effort=param[8],
+                            clock_power_driven=param[9],
+                            congestion_effort=param[10],
+                            uniform_density=param[11])
+            runner.run()
+            self.runParser.update_result(param, ppa)
+            for key in ppa.keys():
+                ppa[key] = float(ppa[key])
+            self.runs[encode(param)] = ppa
+            print("PROC: Iteration {} PPA: {}".format(i, ppa))
 
     def generate_all_params(self):
         all_params = []
         print("Remaining clusters = ", len(self.cluster_gen.cluster_list), "/",
               self.init_cluster_num)
-        for cluster in self.cluster_gen.cluster_list:
+        for cluster in self.all_cluster:
             params = cluster.generate_all()
             all_params += params
         return all_params
@@ -161,16 +262,6 @@ if __name__ == "__main__":
                 param_setup_json="assets/setup.json", num_important_feature=5,
                 result_dir="result")
     model_less_dict = fist.model_less(3)
-    # for key in model_less_dict.keys():
-    #     print(key,":", model_less_dict[key])
-    model = Trainer(mode="all", result=model_less_dict, weight=weight)
-    model.train()
-    params = fist.generate_all_params()
-    # entire_param = []
-    # for param in tqdm(params):
-    #     entire_param.append(param)
-    ppa = model.predict(params)
-    print(ppa)
-    print(type(ppa))
-    print(ppa.shape)
+    fist.exploit(1)
+    fist.explore(1)
 
