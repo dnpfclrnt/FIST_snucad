@@ -80,7 +80,7 @@ class Trainer:
         for i in range(len(data)):
             data[i] = convert_enum(data[i])
 
-            # print("data: ", data[i], "result: ", result[i])
+            print("data: ", data[i], "result: ", result[i])
 
         data = np.array(data)
         result = np.array(result)
