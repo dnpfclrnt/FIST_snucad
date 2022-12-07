@@ -193,7 +193,7 @@ class FIST:
             model.train()
             param_set = cluster.generate_all()
             ppa = model.predict(param_set)
-            max_idx = np.argmax(ppa)
+            max_idx = np.argmin(np.absolute(ppa))
             param = convert_enum_to_str(param_set[max_idx])
             runner = RunCAD(design=self.tune_design,
                             CLOCK_PERIOD=param[0],
@@ -224,7 +224,7 @@ class FIST:
                             weight=weight)
             model.train()
             ppa = model.predict(param_set)
-            max_idx = np.argmax(ppa)
+            max_idx = np.argmin(np.absolute(ppa))
             param = convert_enum_to_str(param_set[max_idx])
             runner = RunCAD(design=self.tune_design,
                             CLOCK_PERIOD=param[0],
