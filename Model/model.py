@@ -98,5 +98,5 @@ class Trainer:
     def predict(self, param_set: list):
         data = convert_enum(param_set)
         data = np.array(data)
-        print("data = ", data)
+        print("data = ", data, len(data), type(data))
         return self.model.predict(data)
