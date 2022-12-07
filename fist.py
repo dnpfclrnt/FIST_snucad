@@ -2,12 +2,9 @@ import os
 from FeatureImportnace import FeatureImportance
 from Clustering import ClusterGen
 from RunParser import RunParser
+from Model import Trainer
 import sys
 sys.path.insert(1, "../../")
-# sys.path.insert(1, "../../CADRunner")
-# sys.path.insert(1, "../../DBWriter")
-# from ... import CADRunner
-# from ... import DBWriter
 from CADRunner import CADRunner
 from DBWriter import DBWriter
 
@@ -30,7 +27,7 @@ class RunCAD:
         """
         This is running script for FIST
         To run snucad_placement_runner, it must follow current step.
-        :param design:
+        :param design: design to tune
         """
         self.design = design
         self.runner = CADRunner(mode="transfer",
@@ -107,6 +104,8 @@ class FIST:
 
     def model_less(self, num_model_less: int):
         params, clusters = self.cluster_gen.generate_param_set_model_less(num_model_less)
+        result_dict = {}
+        idx = 0
         for param in params:
             runner = RunCAD(design=self.tune_design,
                             CLOCK_PERIOD=param[0],
@@ -123,6 +122,10 @@ class FIST:
                             uniform_density=param[11])
             ppa = runner.run()
             self.runParser.update_result(param, ppa)
+            all_param = clusters[idx].generate_all()
+            for feature in all_param:
+                result_dict[feature] = ppa
+        return result_dict
 
 
 if __name__ == "__main__":
@@ -130,4 +133,6 @@ if __name__ == "__main__":
                 transfer_design=None, tune_target="all",
                 param_setup_json="assets/setup.json", num_important_feature=6,
                 result_dir="result")
-    fist.model_less(3)
+    model_less_dict = fist.model_less(10)
+    model = Trainer(mode="all", result=model_less_dict, weight=weight)
+    model.train()

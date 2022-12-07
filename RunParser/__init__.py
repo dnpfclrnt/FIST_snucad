@@ -1,1 +1,1 @@
-from .RunParser import RunParser
+from .RunParser import RunParser, encode, decode
