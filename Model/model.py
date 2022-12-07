@@ -100,5 +100,5 @@ class Trainer:
         data = [convert_enum(param_set)]
         data = np.array(data)
         data = pd.DataFrame(data)
-        print("data = ", data, len(data), type(data))
+        # print("data = ", data, len(data), type(data))
         return self.model.predict(data)

@@ -150,7 +150,9 @@ if __name__ == "__main__":
     model = Trainer(mode="all", result=model_less_dict, weight=weight)
     model.train()
     params = fist.generate_all_params()
+    entire_ppa = []
     for param in tqdm(params):
         ppa = model.predict(param)
-        print(param, ":", ppa)
+    entire_ppa.append(ppa)
+    print(ppa)
 
