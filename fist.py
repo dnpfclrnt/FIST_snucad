@@ -109,6 +109,7 @@ class FIST:
         result_dict = {}
         idx = 0
         for param in params:
+            print(clusters[0].important_feature)
             print("=====================")
             print(params)
             print("=====================")
