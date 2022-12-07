@@ -244,7 +244,7 @@ class FIST:
             for key in ppa.keys():
                 ppa[key] = float(ppa[key])
             self.runs[encode(param)] = ppa
-            print("PROC: Iteration {} PPA: {}".format(i, ppa))
+            print("PROC: Iteration {} param {}, PPA: {}".format(i + 1, param, ppa))
 
     def generate_all_params(self):
         all_params = []
