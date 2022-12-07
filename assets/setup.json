@@ -26,9 +26,9 @@
 		"step": 5
 	},
 	"max_density":{
-		"min": 0,
-		"max": 100,
-		"step": 20
+		"min": 40,
+		"max": 90,
+		"step": 10
 	},
 	"wire_length_opt":["none", "medium", "high"],
 	"timing_effort":["medium", "high"],

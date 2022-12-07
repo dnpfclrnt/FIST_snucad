@@ -2,6 +2,29 @@ import json
 import os
 
 
+def encode(params: tuple or list):
+    enc = []
+    for param in params:
+        element = param
+        if type(param) is not str:
+            element = str(param)
+        enc.append(element)
+    return "_".join(enc)
+
+
+def decode(params: str):
+    split = params.split("_")
+    dec = []
+    for i in range(12):
+        if i == 0 or i == 1 or i == 3 or i == 4:
+            dec.append(float(split[i]))
+        elif i == 1 or i == 5 or i == 6:
+            dec.append(float(split[i]))
+        else:
+            dec.append(split[i])
+    return dec
+
+
 class RunParser:
     def __init__(self, result_path: str):
         """
@@ -34,12 +57,12 @@ class RunParser:
             with open(cluster_json, "r") as f:
                 prev_cluster = json.load(f)
             for sample in cluster:
-                if tuple(sample) not in prev_cluster.keys():
-                    prev_cluster[tuple(sample)] = ppa
+                if encode(sample) not in prev_cluster.keys():
+                    prev_cluster[encode(sample)] = ppa
         else:
             prev_cluster = {}
             for sample in cluster:
-                prev_cluster[tuple(sample)] = ppa
+                prev_cluster[encode(sample)] = ppa
         with open(cluster_json, "w") as f:
             json.dump(prev_cluster, f)
 
@@ -52,7 +75,7 @@ class RunParser:
         """
         if not os.path.isfile(self.json_path):
             cur_result = {
-                tuple(sample): ppa
+                encode(sample): ppa
             }
             with open(self.json_path, "w") as f:
                 print(cur_result)
@@ -60,8 +83,8 @@ class RunParser:
             return cur_result
         with open(self.json_path, "r") as f:
             cur_result = json.load(f)
-        if tuple(sample) not in cur_result.keys():
-            cur_result[tuple(sample)] = ppa
+        if encode(sample) not in cur_result.keys():
+            cur_result[encode(sample)] = ppa
             with open(self.json_path, "w") as f:
                 json.dump(cur_result, f)
         return cur_result
