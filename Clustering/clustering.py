@@ -24,20 +24,51 @@ param_list = ["CLOCK_PERIOD", "CORE_UTIL",
               "congestion_effort", "uniform_density"]
 
 
+def permute(root_list: list, depth: int = 0):
+    """
+    This generates entire combinations of several lists
+    :param root_list: List of lists to combine
+    :param depth: Needed for recursion
+    :return: Combined set of lists
+    """
+    if depth == len(root_list) - 1:
+        if root_list[depth] is None:
+            current_list = [[None]]
+        else:
+            current_list = []
+            for element in root_list[depth]:
+                current_list.append([element])
+        return current_list
+    else:
+        after_lists = permute(root_list, depth+1)
+        dest_list = []
+        if root_list[depth] is None:
+            for after in after_lists:
+                after.insert(0, None)
+                dest_list.append(after)
+        else:
+            for after in after_lists:
+                for element in root_list[depth]:
+                    current = after.copy()
+                    current.insert(0, element)
+                    dest_list.append(current)
+        return dest_list
+
+
 class Cluster:
     def __init__(self, important_feature: list, param_setup: dict):
         """
         This is cluster itself.
         :param important_feature: This saves the value of important features
         ex) [500, 500, None, None, 80, 4, 5, 20, None, None, None, low, false]
-        :param param_setup:
+        :param param_setup: dictionary files loaded from assets/setup.json
         """
         self.important_feature = important_feature
         self.param_setup = param_setup
 
     def random_gen(self):
         """
-        This function is used to generate random paramter set
+        This function is used to generate random parameter set
         """
         def gen(param: dict or list):
             if type(param) == dict:
@@ -55,10 +86,36 @@ class Cluster:
             idx += 1
         return param_set
 
+    def generate_all(self):
+        """
+        This generates entire parameter set
+        :return: All possible combination sets. 
+        """
+        entire_set = []
+        for i in range(12):
+            if self.important_feature[i] is not None:
+                entire_set.append([self.important_feature[i]])
+            else:
+                param = self.param_setup[param_list[i]]
+                if type(param) is dict:
+                    current = range(param["min"], param["max"] + 1, param["step"])
+                    entire_set.append(current)
+                elif type(param) is list:
+                    entire_set.append(param)
+                else:
+                    raise TypeError("Setup must be dict of list type")
+        return permute(entire_set)
+
 
 class ClusterGen:
     def __init__(self, feature_importance: list, param_setup_json: str,
-                 num_important_feature: int):
+                 num_important_feature: int = 6):
+        """
+        This will automatically generate the list of classes
+        :param feature_importance:  Feature importance calculated from featureImportance.py
+        :param param_setup_json: assets/setup.json
+        :param num_important_feature: number of important features. Default = 6
+        """
         if not os.path.isdir(param_setup_json):
             raise FileExistsError("{}: File not found".format(param_setup_json))
         with open(param_setup_json, "r") as f:
@@ -66,30 +123,6 @@ class ClusterGen:
         temp_fi = feature_importance
         temp_fi.sort()
         threshold = temp_fi[11 - num_important_feature]
-
-        def permute(root_list: list, depth: int):
-            if depth == len(root_list) - 1:
-                if root_list[depth] is None:
-                    current_list = [[None]]
-                else:
-                    current_list = []
-                    for element in root_list[depth]:
-                        current_list.append([element])
-                return current_list
-            else:
-                after_lists = permute(root_list, depth+1)
-                dest_list = []
-                if root_list[depth] is None:
-                    for after in after_lists:
-                        after.insert(0, None)
-                        dest_list.append(after)
-                else:
-                    for after in after_lists:
-                        for element in root_list[depth]:
-                            current = after.copy()
-                            current.insert(0, element)
-                            dest_list.append(current)
-                return dest_list
 
         temp = []
         self.cluster_list = []
@@ -104,6 +137,25 @@ class ClusterGen:
                     temp.append(to_list)
                 else:
                     temp.append(setup)
-        for param_set in permute(temp, 0):
+        for param_set in permute(temp):
             cluster = Cluster(param_set, param_setup)
             self.cluster_list.append(cluster)
+
+    def generate_param_set_model_less(self, num_params: int = 100):
+        """
+        Generates the number of requested samples
+        This will be used in model-less sampling
+        :param num_params: number of clusters to generate parameter
+        :return: List of parameter set
+        """
+        random_clusters = random.sample(self.cluster_list, num_params)
+        samples = []
+        for cluster in random_clusters:
+            samples.append(cluster.random_gen())
+            idx = self.cluster_list.index(cluster)
+            self.cluster_list.pop(idx)
+        return samples
+
+    def get_random_cluster(self, num_cluster: int = 50):
+        random_clusters = random.sample(self.cluster_list, num_cluster)
+        return random_clusters
