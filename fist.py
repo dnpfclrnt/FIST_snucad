@@ -2,6 +2,12 @@ import os
 from FeatureImportnace import FeatureImportance
 from Clustering import ClusterGen
 from RunParser import RunParser
+import sys
+sys.path.insert(1, "../../")
+# sys.path.insert(1, "../../CADRunner")
+# sys.path.insert(1, "../../DBWriter")
+# from ... import CADRunner
+# from ... import DBWriter
 from CADRunner import CADRunner
 from DBWriter import DBWriter
 
@@ -93,13 +99,14 @@ class FIST:
                                                    weight=weight,
                                                    prev_data=True)
             self.feature_importance = feature_importance.gen_feature_importance(tune_target)
+
         self.cluster_gen = ClusterGen(self.feature_importance,
                                       param_setup_json,
                                       num_important_feature)
         self.runParser = RunParser(result_dir)
 
     def model_less(self, num_model_less: int):
-        params = self.cluster_gen.generate_param_set_model_less(num_model_less)
+        params, clusters = self.cluster_gen.generate_param_set_model_less(num_model_less)
         for param in params:
             runner = RunCAD(design=self.tune_design,
                             CLOCK_PERIOD=param[0],

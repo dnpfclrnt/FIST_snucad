@@ -116,7 +116,7 @@ class ClusterGen:
         :param param_setup_json: assets/setup.json
         :param num_important_feature: number of important features. Default = 6
         """
-        if not os.path.isdir(param_setup_json):
+        if not os.path.isfile(param_setup_json):
             raise FileExistsError("{}: File not found".format(param_setup_json))
         with open(param_setup_json, "r") as f:
             param_setup = json.load(f)
@@ -137,7 +137,7 @@ class ClusterGen:
                     temp.append(to_list)
                 else:
                     temp.append(setup)
-        for param_set in permute(temp):
+        for param_set in tqdm(permute(temp)):
             cluster = Cluster(param_set, param_setup)
             self.cluster_list.append(cluster)
 

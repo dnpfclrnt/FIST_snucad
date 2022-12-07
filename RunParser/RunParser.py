@@ -14,7 +14,7 @@ class RunParser:
             os.mkdir(result_path)
         trial = 0
         self.result_path = os.path.join(result_path, str(trial))
-        while not os.path.isdir(self.result_path):
+        while os.path.isdir(self.result_path):
             trial += 1
             self.result_path = os.path.join(result_path, str(trial))
         os.mkdir(self.result_path)
