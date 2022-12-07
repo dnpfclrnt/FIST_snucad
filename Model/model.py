@@ -102,5 +102,6 @@ class Trainer:
             data.append(convert_enum(param))
         data = np.array(data)
         data = pd.DataFrame(data)
+        print(data)
         # print("data = ", data, len(data), type(data))
         return self.model.predict(data)
