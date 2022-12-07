@@ -50,6 +50,13 @@ class RunParser:
         :param ppa: output from current parameter
         :return: dictionary of current result
         """
+        if not os.path.isfile(self.json_path):
+            cur_result = {
+                tuple(sample): ppa
+            }
+            with open(self.json_path, "w") as f:
+                json.dump(cur_result, f)
+            return cur_result
         with open(self.json_path, "r") as f:
             cur_result = json.load(f)
         if tuple(sample) not in cur_result.keys():
