@@ -102,6 +102,7 @@ class FIST:
         self.cluster_gen = ClusterGen(self.feature_importance,
                                       param_setup_json,
                                       num_important_feature)
+        self.init_cluster_num = len(self.cluster_gen.cluster_list)
         self.runParser = RunParser(result_dir)
 
     def model_less(self, num_model_less: int):
@@ -134,6 +135,8 @@ class FIST:
 
     def generate_all_params(self):
         all_params = []
+        print("Remaining clusters = ", len(self.cluster_gen.cluster_list), "/",
+              self.init_cluster_num)
         for cluster in self.cluster_gen.cluster_list:
             params = cluster.generate_all()
             all_params += params
