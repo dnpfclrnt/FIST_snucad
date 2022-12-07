@@ -55,6 +55,7 @@ class RunParser:
                 tuple(sample): ppa
             }
             with open(self.json_path, "w") as f:
+                print(cur_result)
                 json.dump(cur_result, f)
             return cur_result
         with open(self.json_path, "r") as f:
