@@ -109,6 +109,10 @@ class FIST:
         result_dict = {}
         idx = 0
         for param in params:
+            print("=====================")
+            print(params)
+            print("=====================")
+            print(param)
             runner = RunCAD(design=self.tune_design,
                             CLOCK_PERIOD=param[0],
                             CORE_UTIL=param[1],
