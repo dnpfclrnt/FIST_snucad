@@ -1,9 +1,11 @@
 import os
+import sys
+from tqdm import tqdm
+
 from FeatureImportnace import FeatureImportance
 from Clustering import ClusterGen
 from RunParser import *
 from Model import Trainer
-import sys
 sys.path.insert(1, "../../")
 from CADRunner import CADRunner
 from DBWriter import DBWriter
@@ -129,6 +131,13 @@ class FIST:
                 result_dict[encode(feature)] = ppa
         return result_dict
 
+    def generate_all_params(self):
+        all_params = []
+        for cluster in self.cluster_gen.cluster_list:
+            params = cluster.generate_all()
+            all_params += params
+        return all_params
+
 
 if __name__ == "__main__":
     fist = FIST(cad_tool_dir=CAD_DIR, tune_design="mem_ctrl",
@@ -140,3 +149,8 @@ if __name__ == "__main__":
         print(key,":", model_less_dict[key])
     model = Trainer(mode="all", result=model_less_dict, weight=weight)
     model.train()
+    params = fist.generate_all_params()
+    for param in tqdm(params):
+        ppa = model.predict(param)
+        print(param, ":", ppa)
+
