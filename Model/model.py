@@ -97,7 +97,9 @@ class Trainer:
         self.model.fit(X, y)
 
     def predict(self, param_set: list):
-        data = [convert_enum(param_set)]
+        data = []
+        for param in param_set:
+            data.append(convert_enum(param))
         data = np.array(data)
         data = pd.DataFrame(data)
         # print("data = ", data, len(data), type(data))
