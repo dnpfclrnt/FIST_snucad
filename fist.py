@@ -1,7 +1,7 @@
 import os
 from FeatureImportnace import FeatureImportance
 from Clustering import ClusterGen
-from RunParser import RunParser
+from RunParser import *
 from Model import Trainer
 import sys
 sys.path.insert(1, "../../")
@@ -124,7 +124,7 @@ class FIST:
             self.runParser.update_result(param, ppa)
             all_param = clusters[idx].generate_all()
             for feature in all_param:
-                result_dict[feature] = ppa
+                result_dict[encode(feature)] = ppa
         return result_dict
 
 
