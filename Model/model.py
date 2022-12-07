@@ -33,6 +33,8 @@ class Trainer:
                 score += self.weight[2] * self.result[param]["area"]
                 score += self.weight[3] * self.result[param]["wire_length"]
                 result.append(score)
+        for i in range(len(data)):
+            print("data: ", data[i], "result: ", result[i])
         data = np.array(data)
         result = np.array(result)
         X = pd.DataFrame(data)
