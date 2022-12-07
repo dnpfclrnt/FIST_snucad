@@ -208,7 +208,7 @@ class FIST:
                             clock_power_driven=param[9],
                             congestion_effort=param[10],
                             uniform_density=param[11])
-            runner.run()
+            ppa = runner.run()
             self.runParser.update_result(param, ppa)
             for key in ppa.keys():
                 ppa[key] = float(ppa[key])
@@ -239,7 +239,7 @@ class FIST:
                             clock_power_driven=param[9],
                             congestion_effort=param[10],
                             uniform_density=param[11])
-            runner.run()
+            ppa = runner.run()
             self.runParser.update_result(param, ppa)
             for key in ppa.keys():
                 ppa[key] = float(ppa[key])
