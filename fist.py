@@ -261,7 +261,7 @@ if __name__ == "__main__":
                 transfer_design=None, tune_target="all",
                 param_setup_json="assets/setup.json", num_important_feature=5,
                 result_dir="result")
-    model_less_dict = fist.model_less(3)
-    fist.exploit(1)
-    fist.explore(1)
+    model_less_dict = fist.model_less(1)
+    fist.exploit(2)
+    fist.explore(2)
 
