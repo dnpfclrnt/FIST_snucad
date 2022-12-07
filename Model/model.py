@@ -4,6 +4,13 @@ import numpy as np
 
 from RunParser import *
 # from ..RunParser import *
+sample = [350.0, 80.0, '64', 160.0, 12.0, 10.0, 80.0, 'none', 'high', 'standard', 'medium', 'false']
+none = "none"
+low = "low"
+medium = "medium"
+high = "high"
+standard = "standard"
+true = "true"
 
 
 class Trainer:
@@ -34,7 +41,43 @@ class Trainer:
                 score += self.weight[3] * self.result[param]["wire_length"]
                 result.append(score)
         for i in range(len(data)):
+            cur = data[i]
+            for j in range(len(cur)):
+                if cur[7] == none:
+                    cur[7] = 0
+                elif cur[7] == medium:
+                    cur[7] = 1
+                else:
+                    cur[7] = 2
+
+                if cur[8] == medium:
+                    cur[8] = 0
+                else:
+                    cur[8] = 1
+
+                if cur[9] == low:
+                    cur[9] = 0
+                elif cur[9] == standard:
+                    cur[9] = 1
+                else:
+                    cur[9] = 2
+
+                if cur[10] == low:
+                    cur[10] = 0
+                elif cur[10] == medium:
+                    cur[10] = 1
+                elif cur[10] == high:
+                    cur[10] = 2
+                else:
+                    cur[10] = 3
+
+                if cur[11] == true:
+                    cur[11] = 0
+                else:
+                    cur[11] = 1
+
             print("data: ", data[i], "result: ", result[i])
+
         data = np.array(data)
         result = np.array(result)
         X = pd.DataFrame(data)

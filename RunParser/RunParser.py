@@ -18,8 +18,8 @@ def decode(params: str):
     for i in range(12):
         if i == 0 or i == 1 or i == 3 or i == 4:
             dec.append(float(split[i]))
-        elif i == 1 or i == 5 or i == 6:
-            dec.append(float(split[i]))
+        elif i == 2 or i == 5 or i == 6:
+            dec.append(int(split[i]))
         else:
             dec.append(split[i])
     return dec
