@@ -1,7 +1,9 @@
 import xgboost as xgb
 import pandas as pd
 import numpy as np
-from ..RunParser import *
+
+from RunParser import *
+# from ..RunParser import *
 
 
 class Trainer:
