@@ -125,6 +125,7 @@ class FIST:
             ppa = runner.run()
             self.runParser.update_result(param, ppa)
             all_param = clusters[idx].generate_all()
+            print(clusters[idx].important_feature)
             for key in ppa.keys():
                 ppa[key] = float(ppa[key])
             for feature in all_param:
