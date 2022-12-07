@@ -74,7 +74,7 @@ class Cluster:
             if type(param) == dict:
                 return random.randrange(param["min"], param["max"], param["step"])
             else:
-                return random.sample(param, 1)
+                return random.sample(param, 1)[0]
         param_set = []
         idx = 0
         for feature in self.important_feature:
@@ -123,7 +123,8 @@ class ClusterGen:
         temp_fi = feature_importance.copy()
         temp_fi.sort()
         threshold = temp_fi[11 - num_important_feature]
-
+        print("=================================")
+        print("threshold")
         temp = []
         self.cluster_list = []
         for i in range(12):
