@@ -155,4 +155,6 @@ if __name__ == "__main__":
         entire_param.append(param)
     ppa = model.predict(entire_param)
     print(ppa)
+    print(type(ppa))
+    print(ppa.shape)
 
