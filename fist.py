@@ -129,6 +129,7 @@ class FIST:
                 ppa[key] = float(ppa[key])
             for feature in all_param:
                 result_dict[encode(feature)] = ppa
+            idx += 1
         return result_dict
 
     def generate_all_params(self):
