@@ -109,11 +109,6 @@ class FIST:
         result_dict = {}
         idx = 0
         for param in params:
-            print(clusters[0].important_feature)
-            print("=====================")
-            print(params)
-            print("=====================")
-            print(param)
             runner = RunCAD(design=self.tune_design,
                             CLOCK_PERIOD=param[0],
                             CORE_UTIL=param[1],
@@ -130,10 +125,10 @@ class FIST:
             ppa = runner.run()
             self.runParser.update_result(param, ppa)
             all_param = clusters[idx].generate_all()
-            print(clusters[idx].important_feature)
             for key in ppa.keys():
                 ppa[key] = float(ppa[key])
             for feature in all_param:
+                print(feature)
                 result_dict[encode(feature)] = ppa
             idx += 1
         return result_dict
