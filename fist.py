@@ -103,7 +103,10 @@ class FIST:
                                       param_setup_json,
                                       num_important_feature)
         self.init_cluster_num = len(self.cluster_gen.cluster_list)
+        self.all_cluster = self.cluster_gen.cluster_list.copy()
         self.runParser = RunParser(result_dir)
+        self.model_less_result = None
+        self.runs = {}
 
     def model_less(self, num_model_less: int):
         params, clusters = self.cluster_gen.generate_param_set_model_less(num_model_less)
@@ -128,10 +131,19 @@ class FIST:
             all_param = clusters[idx].generate_all()
             for key in ppa.keys():
                 ppa[key] = float(ppa[key])
+            self.runs[encode(param)] = ppa
             for feature in all_param:
                 result_dict[encode(feature)] = ppa
             idx += 1
-        return result_dict
+        self.model_less_result = result_dict
+        return self.model_less_result
+
+    def exploit(self, num_exploit: int):
+        model = Trainer(mode=self.tune_target,
+                        result=self.model_less_result,
+                        weight=weight)
+        model.train()
+        params, clusters = self.cluster_gen.generate_param_set_model_less(num_exploit)
 
     def generate_all_params(self):
         all_params = []
@@ -154,10 +166,10 @@ if __name__ == "__main__":
     model = Trainer(mode="all", result=model_less_dict, weight=weight)
     model.train()
     params = fist.generate_all_params()
-    entire_param = []
-    for param in tqdm(params):
-        entire_param.append(param)
-    ppa = model.predict(entire_param)
+    # entire_param = []
+    # for param in tqdm(params):
+    #     entire_param.append(param)
+    ppa = model.predict(params)
     print(ppa)
     print(type(ppa))
     print(ppa.shape)
