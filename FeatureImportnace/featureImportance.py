@@ -26,6 +26,8 @@ class PrevRunParser:
             wa = weight[0] * label[0]
             wa += weight[1] * label[1]
             wa += weight[2] * label[2]
+            wa += weight[3] * label[3]
+            wa += weight[4] * label[4]
             label.append(wa)
             self.prev_runs.append([param_set, label])
 
@@ -75,20 +77,24 @@ class PrevRunParser:
                 if mode == "power":
                     encoded[enc].append(run[1][0])
                 elif mode == "performance":
-                    encoded[enc].append(run[1][1])
+                    perf = run[1][1] * self.weight[1]
+                    perf += run[1][2] * self.weight[2]
+                    encoded[enc].append(perf)
                 elif mode == "area":
                     encoded[enc].append(run[1][3])
                 elif mode == "all":
                     encoded[enc].append(run[1][-1])
             else:
                 if mode == "power":
-                    encoded[enc] = [(run[1][0])]
+                    encoded[enc] = [run[1][0]]
                 elif mode == "performance":
-                    encoded[enc] = [(run[1][1])]
+                    perf = run[1][1] * self.weight[1]
+                    perf += run[1][2] * self.weight[2]
+                    encoded[enc] = [perf]
                 elif mode == "area":
-                    encoded[enc] = [(run[1][3])]
+                    encoded[enc] = [run[1][3]]
                 elif mode == "all":
-                    encoded[enc] = [(run[1][-1])]
+                    encoded[enc] = [run[1][-1]]
         sum_var = 0
         for feature in encoded.keys():
             score_arr = np.array(encoded[feature])

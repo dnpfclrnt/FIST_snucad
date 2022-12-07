@@ -1,1 +1,1 @@
-from .clustering import Cluster
+from .clustering import Cluster, ClusterGen

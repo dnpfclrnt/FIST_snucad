@@ -89,7 +89,7 @@ class Cluster:
     def generate_all(self):
         """
         This generates entire parameter set
-        :return: All possible combination sets. 
+        :return: All possible combination sets.
         """
         entire_set = []
         for i in range(12):
@@ -150,11 +150,13 @@ class ClusterGen:
         """
         random_clusters = random.sample(self.cluster_list, num_params)
         samples = []
+        sample_cluster = []
         for cluster in random_clusters:
             samples.append(cluster.random_gen())
             idx = self.cluster_list.index(cluster)
-            self.cluster_list.pop(idx)
-        return samples
+            cur_cluster = self.cluster_list.pop(idx)
+            sample_cluster.append(cur_cluster)
+        return samples, sample_cluster
 
     def get_random_cluster(self, num_cluster: int = 50):
         random_clusters = random.sample(self.cluster_list, num_cluster)
