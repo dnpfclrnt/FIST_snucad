@@ -129,7 +129,8 @@ class FIST:
     def __init__(self, cad_tool_dir: str, tune_design: str,
                  transfer_design: str = None, tune_target=None,
                  param_setup_json: str = None, num_important_feature: int = 5,
-                 result_dir: str = "result"):
+                 result_dir: str = "result",
+                 num_exploit=40, num_explore=60):
         self.cad_dir = cad_tool_dir
         self.tune_design = tune_design
         self.tune_target = tune_target
@@ -153,6 +154,10 @@ class FIST:
         self.runParser = RunParser(result_dir)
         self.model_less_result = None
         self.runs = {}
+        self.num_exploit = num_exploit
+        self.num_explore = num_explore
+        self.total_iter = num_explore + num_exploit
+        self.depth = [3, 10]
 
     def model_less(self, num_model_less: int):
         params, clusters = self.cluster_gen.generate_param_set_model_less(num_model_less)
@@ -186,11 +191,16 @@ class FIST:
 
     def exploit(self, num_exploit: int):
         clusters = self.cluster_gen.get_random_cluster(num_exploit)
+        iteration = 0
         for cluster in clusters:
             model = Trainer(mode=self.tune_target,
                             result=self.model_less_result,
                             weight=weight)
-            model.train()
+            depth = self.depth[0] * (self.total_iter - iteration)
+            depth += self.depth[1] * iteration
+            depth /= self.total_iter
+            iteration += 1
+            model.train(max_depth=depth)
             param_set = cluster.generate_all()
             ppa = model.predict(param_set)
             max_idx = np.argmin(np.absolute(ppa))
@@ -218,11 +228,16 @@ class FIST:
 
     def explore(self, num_explore: int):
         param_set = self.generate_all_params()
+        iteration = 0
         for i in range(num_explore):
             model = Trainer(mode=self.tune_target,
                             result=self.runs,
                             weight=weight)
-            model.train()
+            depth = self.depth[0] * (self.total_iter - iteration)
+            depth += self.depth[1] * iteration
+            depth /= self.total_iter
+            iteration += 1
+            model.train(max_depth=depth)
             ppa = model.predict(param_set)
             max_idx = np.argmin(np.absolute(ppa))
             param = convert_enum_to_str(param_set[max_idx])

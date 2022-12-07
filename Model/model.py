@@ -87,7 +87,7 @@ class Trainer:
         y = pd.DataFrame(result)
         return X, y
 
-    def train(self, max_depth=int, learning_rate=0.001):
+    def train(self, max_depth: int = 3, learning_rate=0.001):
         X, y = self.construct_data()
         # data_dmatrix = xgb.DMatrix(data=X, label=y)
         print("PROC: Training starts")
