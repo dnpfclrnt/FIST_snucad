@@ -149,7 +149,7 @@ class FIST:
 if __name__ == "__main__":
     fist = FIST(cad_tool_dir=CAD_DIR, tune_design="mem_ctrl",
                 transfer_design=None, tune_target="all",
-                param_setup_json="assets/setup.json", num_important_feature=6,
+                param_setup_json="assets/setup.json", num_important_feature=5,
                 result_dir="result")
     model_less_dict = fist.model_less(1)
     for key in model_less_dict.keys():
