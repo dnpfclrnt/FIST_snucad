@@ -79,7 +79,6 @@ class Trainer:
                 result.append(score)
         for i in range(len(data)):
             data[i] = convert_enum(data[i])
-
             print("data: ", data[i], "result: ", result[i])
 
         data = np.array(data)
@@ -91,6 +90,8 @@ class Trainer:
     def train(self, max_depth=int, learning_rate=0.001):
         X, y = self.construct_data()
         # data_dmatrix = xgb.DMatrix(data=X, label=y)
+        print("PROC: Training starts")
+        print(X)
         self.model = xgb.XGBRegressor(learning_rate=learning_rate,
                                       max_depth=max_depth)
         self.model.fit(X, y)
