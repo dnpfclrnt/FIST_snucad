@@ -92,6 +92,7 @@ class Trainer:
         # data_dmatrix = xgb.DMatrix(data=X, label=y)
         print("PROC: Training starts")
         print(X)
+        print(y)
         self.model = xgb.XGBRegressor(learning_rate=learning_rate,
                                       max_depth=max_depth)
         self.model.fit(X, y)
