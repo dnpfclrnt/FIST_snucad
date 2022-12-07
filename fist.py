@@ -128,7 +128,6 @@ class FIST:
             for key in ppa.keys():
                 ppa[key] = float(ppa[key])
             for feature in all_param:
-                print(feature)
                 result_dict[encode(feature)] = ppa
             idx += 1
         return result_dict
@@ -147,8 +146,8 @@ if __name__ == "__main__":
                 param_setup_json="assets/setup.json", num_important_feature=5,
                 result_dir="result")
     model_less_dict = fist.model_less(1)
-    for key in model_less_dict.keys():
-        print(key,":", model_less_dict[key])
+    # for key in model_less_dict.keys():
+    #     print(key,":", model_less_dict[key])
     model = Trainer(mode="all", result=model_less_dict, weight=weight)
     model.train()
     params = fist.generate_all_params()

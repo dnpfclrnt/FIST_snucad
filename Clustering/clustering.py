@@ -123,9 +123,6 @@ class ClusterGen:
         temp_fi = feature_importance.copy()
         temp_fi.sort()
         threshold = temp_fi[11 - num_important_feature]
-        print("=================================")
-        print(temp_fi, temp_fi[11 - num_important_feature], num_important_feature)
-        print("threshold = ", threshold)
         temp = []
         self.cluster_list = []
         for i in range(12):
