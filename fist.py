@@ -82,7 +82,7 @@ class RunCAD:
 class FIST:
     def __init__(self, cad_tool_dir: str, tune_design: str,
                  transfer_design: str = None, tune_target=None,
-                 param_setup_json: str = None, num_important_feature: int = 6,
+                 param_setup_json: str = None, num_important_feature: int = 5,
                  result_dir: str = "result"):
         self.cad_dir = cad_tool_dir
         self.tune_design = tune_design

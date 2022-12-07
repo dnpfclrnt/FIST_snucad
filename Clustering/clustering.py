@@ -120,7 +120,7 @@ class ClusterGen:
             raise FileExistsError("{}: File not found".format(param_setup_json))
         with open(param_setup_json, "r") as f:
             param_setup = json.load(f)
-        temp_fi = feature_importance
+        temp_fi = feature_importance.copy()
         temp_fi.sort()
         threshold = temp_fi[11 - num_important_feature]
 
