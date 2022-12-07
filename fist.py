@@ -133,6 +133,6 @@ if __name__ == "__main__":
                 transfer_design=None, tune_target="all",
                 param_setup_json="assets/setup.json", num_important_feature=6,
                 result_dir="result")
-    model_less_dict = fist.model_less(10)
+    model_less_dict = fist.model_less(3)
     model = Trainer(mode="all", result=model_less_dict, weight=weight)
     model.train()
