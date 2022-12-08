@@ -200,7 +200,7 @@ class FIST:
             depth += self.depth[1] * iteration
             depth /= self.total_iter
             iteration += 1
-            model.train(max_depth=depth)
+            model.train(max_depth=int(depth))
             param_set = cluster.generate_all()
             ppa = model.predict(param_set)
             max_idx = np.argmin(np.absolute(ppa))
@@ -237,7 +237,7 @@ class FIST:
             depth += self.depth[1] * iteration
             depth /= self.total_iter
             iteration += 1
-            model.train(max_depth=depth)
+            model.train(max_depth=int(depth))
             ppa = model.predict(param_set)
             max_idx = np.argmin(np.absolute(ppa))
             param = convert_enum_to_str(param_set[max_idx])
