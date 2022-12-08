@@ -26,6 +26,12 @@ auto = "auto"
 
 
 def convert_enum_to_str(params: list):
+    """
+    Since xgboost model cannot get str type,
+    all parameters were changed to enumerators
+    :param params: parameter used for xgboost
+    :return: parameter for cad tool
+    """
     for i in range(len(params)):
         if params[7] == 0:
             params[7] = none
@@ -135,6 +141,7 @@ class FIST:
         self.tune_design = tune_design
         self.tune_target = tune_target
         self.transfer_design=transfer_design
+        self.result_dir = result_dir
         if transfer_design is None:
             feature_importance = FeatureImportance(weight=weight)
             self.feature_importance = feature_importance.gen_feature_importance()
@@ -154,12 +161,15 @@ class FIST:
         self.runParser = RunParser(result_dir)
         self.model_less_result = None
         self.runs = {}
+        self.num_model_less = 0
         self.num_exploit = num_exploit
         self.num_explore = num_explore
         self.total_iter = num_explore + num_exploit
         self.depth = [3, 10]
+        self.results = []
 
     def model_less(self, num_model_less: int):
+        self.num_model_less = num_model_less
         params, clusters = self.cluster_gen.generate_param_set_model_less(num_model_less)
         result_dict = {}
         idx = 0
@@ -187,6 +197,7 @@ class FIST:
                 result_dict[encode(feature)] = ppa
             idx += 1
         self.model_less_result = result_dict
+        self.results.append(ppa)
         return self.model_less_result
 
     def exploit(self, num_exploit: int):
@@ -202,8 +213,8 @@ class FIST:
             iteration += 1
             model.train(max_depth=int(depth))
             param_set = cluster.generate_all()
-            ppa = model.predict(param_set)
-            max_idx = np.argmin(np.absolute(ppa))
+            ppa_pred = model.predict(param_set)
+            max_idx = np.argmin(np.absolute(ppa_pred))
             param = convert_enum_to_str(param_set[max_idx])
             runner = RunCAD(design=self.tune_design,
                             CLOCK_PERIOD=param[0],
@@ -225,6 +236,7 @@ class FIST:
             self.runs[encode(param)] = ppa
             for feature in param_set:
                 self.model_less_result[encode(feature)] = ppa
+            self.results.append(ppa)
 
     def explore(self, num_explore: int):
         param_set = self.generate_all_params()
@@ -238,8 +250,8 @@ class FIST:
             depth /= self.total_iter
             iteration += 1
             model.train(max_depth=int(depth))
-            ppa = model.predict(param_set)
-            max_idx = np.argmin(np.absolute(ppa))
+            ppa_pred = model.predict(param_set)
+            max_idx = np.argmin(np.absolute(ppa_pred))
             param = convert_enum_to_str(param_set[max_idx])
             runner = RunCAD(design=self.tune_design,
                             CLOCK_PERIOD=param[0],
@@ -259,6 +271,7 @@ class FIST:
             for key in ppa.keys():
                 ppa[key] = float(ppa[key])
             self.runs[encode(param)] = ppa
+            self.results.append(ppa)
             print("PROC: Iteration {} param {}, PPA: {}".format(i + 1, param, ppa))
 
     def generate_all_params(self):
@@ -270,6 +283,40 @@ class FIST:
             all_params += params
         return all_params
 
+    def write_result(self):
+        """
+        This writes the run result
+        :return:
+        """
+        old_stdout = sys.stdout
+        trial = 0
+        while os.path.isdir(os.path.join(self.result_dir, str(trial))):
+            trial += 1
+        write_dir = os.path.join(self.result_dir, str(trial - 1))
+        sys.stdout = open(os.path.join(write_dir, "runs.txt"), "w")
+        num_iter = 0
+        for runs in self.results:
+            power = float(runs["power"])
+            wns = float(runs["wns"])
+            tns = float(runs["tns"])
+            area = float(runs["area"])
+            wireLength = float(runs["wire_length"])
+            if num_iter < self.num_model_less:
+                print("Iteration {} Modelless: power: {} wns: {} tns: {} area = {} wirelength = {}".format(
+                    num_iter, power, wns, tns, area, wireLength
+                ))
+            elif self.num_model_less < num_iter < self.num_model_less + self.num_exploit:
+                print("Iteration {} Exploitation: power: {} wns: {} tns: {} area = {} wirelength = {}".format(
+                    num_iter, power, wns, tns, area, wireLength
+                ))
+            else:
+                print("Iteration {} Exploration: power: {} wns: {} tns: {} area = {} wirelength = {}".format(
+                    num_iter, power, wns, tns, area, wireLength
+                ))
+            num_iter += 1
+        sys.stdout.close()
+        sys.stdout = old_stdout
+
 
 if __name__ == "__main__":
     fist = FIST(cad_tool_dir=CAD_DIR, tune_design="mem_ctrl",
@@ -279,4 +326,5 @@ if __name__ == "__main__":
     model_less_dict = fist.model_less(100)
     fist.exploit(40)
     fist.explore(60)
+    fist.write_result()
 
