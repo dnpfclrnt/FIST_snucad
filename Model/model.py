@@ -66,7 +66,7 @@ class Trainer:
                 result.append(self.result[param]["power"])
             elif self.mode == "performance":
                 perf = self.result[param]["wns"] * self.weight[1]
-                perf = self.result[param]['tns'] * self.weight[2]
+                perf += self.result[param]['tns'] * self.weight[2]
                 result.append(perf)
             elif self.mode == "area":
                 result.append(self.result[param]["area"])

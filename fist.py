@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import numpy as np
@@ -23,6 +24,7 @@ standard = "standard"
 true = "true"
 false = "false"
 auto = "auto"
+min_slack = 0.0001
 
 
 def convert_enum_to_str(params: list):
@@ -131,8 +133,24 @@ class RunCAD:
         return ppa
 
 
+def calc_score(def_ppa: dict, result_ppa):
+    power = (def_ppa["power"] - result_ppa["power"]) / def_ppa["power"]
+    wns = (def_ppa["wns"] - result_ppa["wns"]) / def_ppa["wns"]
+    tns = (def_ppa["tns"] - result_ppa["tns"]) / def_ppa["tns"]
+    area = (def_ppa["area"] - result_ppa["area"]) / def_ppa["area"]
+    wirelegnth = (def_ppa["wire_length"] - result_ppa["wire_length"]) / def_ppa["wire_length"]
+    score = {
+        "power": power,
+        "wns": wns,
+        "tns": tns
+        "area": area,
+        "wire_length": wirelegnth
+    }
+    return score
+
+
 class FIST:
-    def __init__(self, cad_tool_dir: str, tune_design: str,
+    def __init__(self, cad_tool_dir: str, tune_design: str, default_dir: str,
                  transfer_design: str = None, tune_target=None,
                  param_setup_json: str = None, num_important_feature: int = 5,
                  result_dir: str = "result",
@@ -167,6 +185,22 @@ class FIST:
         self.total_iter = num_explore + num_exploit
         self.depth = [3, 10]
         self.results = []
+        self.default_param = None
+        self.default_ppa = None
+        self.run_default(default_dir)
+
+    def run_default(self, default_setup_file: str = "assets/default.json"):
+        if not os.path.isfile(default_setup_file):
+            raise FileNotFoundError("There is no default json file")
+        with open(default_setup_file, "r") as f:
+            self.default_param = json.load(f)
+
+        runner = RunCAD(design=self.tune_design, **self.default_param)
+        self.default_ppa = runner.run()
+        for key in self.default_ppa.keys():
+            self.default_ppa[key] = float(self.default_ppa[key])
+            if self.default_ppa[key] == 0:
+                self.default_ppa[key] = min_slack
 
     def model_less(self, num_model_less: int):
         self.num_model_less = num_model_less
@@ -190,9 +224,13 @@ class FIST:
             ppa = runner.run()
             self.runParser.update_result(param, ppa)
             all_param = clusters[idx].generate_all()
+            # Convert string result to float
             for key in ppa.keys():
                 ppa[key] = float(ppa[key])
+            # Convert raw ppa to score
+            ppa = calc_score(self.default_ppa, ppa)
             self.runs[encode(param)] = ppa
+            # Assign score to entire cluster
             for feature in all_param:
                 result_dict[encode(feature)] = ppa
             self.results.append((param, ppa))
@@ -234,6 +272,7 @@ class FIST:
             self.runParser.update_result(param, ppa)
             for key in ppa.keys():
                 ppa[key] = float(ppa[key])
+            ppa = calc_score(self.default_ppa, ppa)
             self.runs[encode(param)] = ppa
             for feature in param_set:
                 self.model_less_result[encode(feature)] = ppa
@@ -271,6 +310,7 @@ class FIST:
             self.runParser.update_result(param, ppa)
             for key in ppa.keys():
                 ppa[key] = float(ppa[key])
+            ppa = calc_score(self.default_ppa, ppa)
             self.runs[encode(param)] = ppa
             self.results.append((param, ppa))
             print("PROC: Iteration {} param {}, PPA: {}".format(i + 1, param, ppa))

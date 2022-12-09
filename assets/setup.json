@@ -7,7 +7,7 @@
 	"CORE_UTIL":{
 		"min": 50,
 		"max": 80,
-		"step": 10
+		"step": 5
 	},
 	"set_max_fanout":[8, 16, 32, 64],
 	"set_max_transition":{
