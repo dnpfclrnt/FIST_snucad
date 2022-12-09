@@ -271,7 +271,7 @@ class FIST:
             for key in ppa.keys():
                 ppa[key] = float(ppa[key])
             self.runs[encode(param)] = ppa
-            self.results.append(ppa)
+            self.results.append((param, ppa))
             print("PROC: Iteration {} param {}, PPA: {}".format(i + 1, param, ppa))
 
     def generate_all_params(self):
@@ -295,23 +295,23 @@ class FIST:
         write_dir = os.path.join(self.result_dir, str(trial - 1))
         sys.stdout = open(os.path.join(write_dir, "runs.txt"), "w")
         num_iter = 0
-        for runs in self.results:
+        for param, runs in self.results:
             power = float(runs["power"])
             wns = float(runs["wns"])
             tns = float(runs["tns"])
             area = float(runs["area"])
             wireLength = float(runs["wire_length"])
             if num_iter < self.num_model_less:
-                print("Iteration {} Modelless: power: {} wns: {} tns: {} area = {} wirelength = {}".format(
-                    num_iter, power, wns, tns, area, wireLength
+                print("Iteration {} Modelless: param {} power: {} wns: {} tns: {} area = {} wirelength = {}".format(
+                    param, num_iter, power, wns, tns, area, wireLength
                 ))
             elif self.num_model_less < num_iter < self.num_model_less + self.num_exploit:
-                print("Iteration {} Exploitation: power: {} wns: {} tns: {} area = {} wirelength = {}".format(
-                    num_iter, power, wns, tns, area, wireLength
+                print("Iteration {} Exploitation: {} power: {} wns: {} tns: {} area = {} wirelength = {}".format(
+                    param, num_iter, power, wns, tns, area, wireLength
                 ))
             else:
-                print("Iteration {} Exploration: power: {} wns: {} tns: {} area = {} wirelength = {}".format(
-                    num_iter, power, wns, tns, area, wireLength
+                print("Iteration {} Exploration: {} power: {} wns: {} tns: {} area = {} wirelength = {}".format(
+                    param, num_iter, power, wns, tns, area, wireLength
                 ))
             num_iter += 1
         sys.stdout.close()
@@ -323,8 +323,8 @@ if __name__ == "__main__":
                 transfer_design=None, tune_target="all",
                 param_setup_json="assets/setup.json", num_important_feature=5,
                 result_dir="result")
-    model_less_dict = fist.model_less(100)
-    fist.exploit(40)
-    fist.explore(60)
+    model_less_dict = fist.model_less(1)
+    fist.exploit(2)
+    fist.explore(3)
     fist.write_result()
 
