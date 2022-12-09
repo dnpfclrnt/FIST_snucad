@@ -195,9 +195,10 @@ class FIST:
             self.runs[encode(param)] = ppa
             for feature in all_param:
                 result_dict[encode(feature)] = ppa
+            self.results.append((param, ppa))
             idx += 1
         self.model_less_result = result_dict
-        self.results.append(ppa)
+
         return self.model_less_result
 
     def exploit(self, num_exploit: int):
@@ -236,7 +237,7 @@ class FIST:
             self.runs[encode(param)] = ppa
             for feature in param_set:
                 self.model_less_result[encode(feature)] = ppa
-            self.results.append(ppa)
+            self.results.append((param, ppa))
 
     def explore(self, num_explore: int):
         param_set = self.generate_all_params()
