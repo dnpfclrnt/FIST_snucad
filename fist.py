@@ -142,7 +142,7 @@ def calc_score(def_ppa: dict, result_ppa):
     score = {
         "power": power,
         "wns": wns,
-        "tns": tns
+        "tns": tns,
         "area": area,
         "wire_length": wirelegnth
     }
@@ -360,7 +360,7 @@ class FIST:
 
 
 if __name__ == "__main__":
-    fist = FIST(cad_tool_dir=CAD_DIR, tune_design="mem_ctrl",
+    fist = FIST(cad_tool_dir=CAD_DIR, tune_design="mem_ctrl", default_dir="assets/default.json",
                 transfer_design=None, tune_target="all",
                 param_setup_json="assets/setup.json", num_important_feature=5,
                 result_dir="result")
