@@ -109,6 +109,8 @@ class RunCAD:
 
     def run(self):
         cur_dir = os.getcwd()
+        print("========== Running Parameter Set ==========")
+        print(self.runner.str_param)
         prev_ppa = self.writer.check_prev_run(self.runner.str_param)
         if not os.path.isdir(self.result_dir):
             os.chdir(CAD_DIR)
