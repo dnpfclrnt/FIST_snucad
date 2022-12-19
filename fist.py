@@ -362,6 +362,7 @@ class FIST:
 
 
 if __name__ == "__main__":
+    print("FIST setup")
     fist = FIST(cad_tool_dir=CAD_DIR, tune_design="mem_ctrl", default_dir="assets/default.json",
                 transfer_design=None, tune_target="all",
                 param_setup_json="assets/setup.json", num_important_feature=5,
