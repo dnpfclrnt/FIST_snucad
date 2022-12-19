@@ -189,6 +189,7 @@ class FIST:
         self.results = []
         self.default_param = None
         self.default_ppa = None
+        print("Running default")
         self.run_default(default_dir)
 
     def run_default(self, default_setup_file: str = "assets/default.json"):
