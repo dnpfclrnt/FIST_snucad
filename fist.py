@@ -111,15 +111,16 @@ class RunCAD:
         cur_dir = os.getcwd()
         print("========== Running Parameter Set ==========")
         print(self.runner.str_param)
+        os.chdir(CAD_DIR)
         prev_ppa = self.writer.check_prev_run(self.runner.str_param)
         if not os.path.isdir(self.result_dir):
-            os.chdir(CAD_DIR)
+            # os.chdir(CAD_DIR)
             self.runner.run()
         else:
             if prev_ppa is not None:
                 return prev_ppa
             else:
-                os.chdir(CAD_DIR)
+                # os.chdir(CAD_DIR)
                 self.runner.run()
         power, perf, area, wire_length = self.writer.parse(self.result_dir)
         self.writer.write(write_dir=data_dir, filename=ppa_filename,
