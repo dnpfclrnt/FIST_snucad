@@ -221,6 +221,7 @@ class FIST:
                             congestion_effort=param[10],
                             uniform_density=param[11])
             ppa = runner.run()
+            print(os.getcwd())
             self.runParser.update_result(param, ppa)
             all_param = clusters[idx].generate_all()
             # Convert string result to float
