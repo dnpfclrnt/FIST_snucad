@@ -65,10 +65,6 @@ class Cluster:
         """
         self.important_feature = important_feature
         self.param_setup = param_setup
-        import time
-        print("==============")
-        print(self.param_setup)
-        time.sleep(10)
 
     def random_gen(self):
         """
