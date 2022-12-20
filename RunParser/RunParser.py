@@ -63,7 +63,7 @@ class RunParser:
             prev_cluster = {}
             for sample in cluster:
                 prev_cluster[encode(sample)] = ppa
-        with open(cluster_json, "w") as f:
+        with open(cluster_json, "w+") as f:
             json.dump(prev_cluster, f)
 
     def update_result(self, sample: list, ppa: dict):
@@ -77,7 +77,7 @@ class RunParser:
             cur_result = {
                 encode(sample): ppa
             }
-            with open(self.json_path, "w") as f:
+            with open(self.json_path, "w+") as f:
                 print(cur_result)
                 json.dump(cur_result, f)
             return cur_result
