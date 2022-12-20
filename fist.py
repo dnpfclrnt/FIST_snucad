@@ -42,7 +42,7 @@ def convert_enum_to_str(params: list):
         else:
             params[7] = high
 
-        params[] = medium
+        params[8] = medium
         # if params[8] == 0:
         #     params[8] = medium
         # else:
