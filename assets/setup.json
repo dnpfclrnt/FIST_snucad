@@ -31,7 +31,7 @@
 		"step": 10
 	},
 	"wire_length_opt":["none", "medium", "high"],
-	"timing_effort":["medium", "high"],
+	"timing_effort":["medium"],
 	"clock_power_driven":["low", "standard", "high"],
 	"congestion_effort":["low", "medium", "high", "auto"],
 	"uniform_density":["true", "false"]
