@@ -34,6 +34,7 @@ def convert_enum_to_str(params: list):
     :param params: parameter used for xgboost
     :return: parameter for cad tool
     """
+    print(params)
     for i in range(len(params)):
         if params[7] == 0:
             params[7] = none
@@ -68,6 +69,7 @@ def convert_enum_to_str(params: list):
             params[11] = true
         else:
             params[11] = false
+    print(params)
     return params
 
 
