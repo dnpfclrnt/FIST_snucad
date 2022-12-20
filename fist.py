@@ -114,6 +114,7 @@ class RunCAD:
         os.chdir(CAD_DIR)
         prev_ppa = self.writer.check_prev_run(self.runner.str_param)
         if prev_ppa is not None:
+            os.chdir(cur_dir)
             return prev_ppa
         else:
             self.runner.run()
