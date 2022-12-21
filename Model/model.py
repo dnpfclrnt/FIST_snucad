@@ -22,10 +22,11 @@ def convert_enum(cur: list):
         else:
             cur[7] = 2
 
-        if cur[8] == medium:
-            cur[8] = 0
-        else:
-            cur[8] = 1
+        cur[8] = 0
+        # if cur[8] == medium:
+        #     cur[8] = 0
+        # else:
+        #     cur[8] = 1
 
         if cur[9] == low:
             cur[9] = 0
