@@ -175,6 +175,7 @@ class FIST:
             print("===================")
             print("Feature importance")
             print(self.feature_importance)
+            exit()
 
         self.cluster_gen = ClusterGen(self.feature_importance,
                                       param_setup_json,
