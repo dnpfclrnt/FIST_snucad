@@ -74,7 +74,6 @@ class PrevRunParser:
         encoded = {}
         for run in runs:
             param_set = run[0]
-            # print(run)
             enc = self.encode(param_set, idx)
             if enc in encoded.keys():
                 if mode == "power":
@@ -101,6 +100,8 @@ class PrevRunParser:
         sum_var = 0
         for feature in encoded.keys():
             score_arr = np.array(encoded[feature])
+            print(feature)
+            print(score_arr)
             var = float(np.var(score_arr))
             sum_var += pow(var, 2)
         return sum_var
@@ -140,6 +141,7 @@ class FeatureImportance:
 
             importance = []
             for i in range(12):
+                print(i, "====================")
                 var = self.prev_run.get_sum_variance(i, self.mode)
                 importance.append(var)
             return importance
