@@ -100,6 +100,7 @@ class PrevRunParser:
         sum_var = 0
         for feature in encoded.keys():
             score_arr = np.array(encoded[feature])
+            print(score_arr)
             var = float(np.var(score_arr))
             sum_var += pow(var, 2)
         return sum_var
