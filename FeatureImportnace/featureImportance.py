@@ -75,6 +75,7 @@ class PrevRunParser:
         for run in runs:
             param_set = run[0]
             enc = self.encode(param_set, idx)
+            print(enc)
             if enc in encoded.keys():
                 if mode == "power":
                     encoded[enc].append(run[1][0])
@@ -100,9 +101,6 @@ class PrevRunParser:
         sum_var = 0
         for feature in encoded.keys():
             score_arr = np.array(encoded[feature])
-            if len(score_arr) > 2:
-                print(feature)
-                print(score_arr)
             var = float(np.var(score_arr))
             sum_var += pow(var, 2)
         return sum_var
