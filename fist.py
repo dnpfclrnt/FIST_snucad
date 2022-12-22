@@ -232,6 +232,9 @@ class FIST:
             print(os.getcwd())
             self.runParser.update_result(param, ppa)
             all_param = clusters[idx].generate_all()
+            print("Cluster id {}".format(idx))
+            print(params)
+            print(all_param)
             # Convert string result to float
             for key in ppa.keys():
                 ppa[key] = float(ppa[key])
