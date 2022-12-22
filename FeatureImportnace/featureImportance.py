@@ -21,6 +21,7 @@ class PrevRunParser:
         self.prev_runs = []
         for param_str in self.prev_ppa.keys():
             run = self.prev_ppa[param_str]
+            print(run)
             param_set = "_".split(param_str)
             label = [run["power"], run["wns"], run["tns"], run["area"], run["wire_length"]]
             for i in range(len(label)):
@@ -74,7 +75,7 @@ class PrevRunParser:
         encoded = {}
         for run in runs:
             param_set = run[0]
-            print(run)
+            # print(run)
             enc = self.encode(param_set, idx)
             if enc in encoded.keys():
                 if mode == "power":
