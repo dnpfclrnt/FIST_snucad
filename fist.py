@@ -368,8 +368,12 @@ class FIST:
 
 if __name__ == "__main__":
     print("FIST setup")
-    fist = FIST(cad_tool_dir=CAD_DIR, tune_design="mem_ctrl", default_dir="assets/default.json",
-                transfer_design=None, tune_target="all",
+    # fist = FIST(cad_tool_dir=CAD_DIR, tune_design="mem_ctrl", default_dir="assets/default.json",
+    #             transfer_design=None, tune_target="all",
+    #             param_setup_json="assets/setup.json", num_important_feature=5,
+    #             result_dir="result")
+    fist = FIST(cad_tool_dir=CAD_DIR, tune_design="aes_cipher", default_dir="assets/default.json",
+                transfer_design="mem_ctrl", tune_target="all",
                 param_setup_json="assets/setup.json", num_important_feature=5,
                 result_dir="result")
     print("Model-less")
