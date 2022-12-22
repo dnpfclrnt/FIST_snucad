@@ -22,7 +22,13 @@ class PrevRunParser:
         for param_str in self.prev_ppa.keys():
             run = self.prev_ppa[param_str]
             param_set = "_".split(param_str)
-            label = [run["power"], run["wns"], run["tns"], run["area"], run["wirelength"]]
+            label = [run["power"], run["wns"], run["tns"], run["area"], run["wire_length"]]
+            for i in range(len(label)):
+                label[i] = float(label[i])
+            print("label")
+            print(label)
+            print("weight")
+            print(weight)
             wa = weight[0] * label[0]
             wa += weight[1] * label[1]
             wa += weight[2] * label[2]

@@ -160,7 +160,7 @@ class FIST:
         self.cad_dir = cad_tool_dir
         self.tune_design = tune_design
         self.tune_target = tune_target
-        self.transfer_design=transfer_design
+        self.transfer_design = transfer_design
         self.result_dir = result_dir
         if transfer_design is None:
             feature_importance = FeatureImportance(weight=weight)
@@ -172,6 +172,9 @@ class FIST:
                                                    weight=weight,
                                                    prev_data=True)
             self.feature_importance = feature_importance.gen_feature_importance(tune_target)
+            print("===================")
+            print("Feature importance")
+            print(self.feature_importance)
 
         self.cluster_gen = ClusterGen(self.feature_importance,
                                       param_setup_json,
