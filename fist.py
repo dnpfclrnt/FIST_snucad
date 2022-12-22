@@ -191,10 +191,6 @@ class FIST:
         self.default_ppa = None
         print("Running default")
         self.run_default(default_dir)
-        print("===================")
-        print("Feature importance")
-        print(self.feature_importance)
-        exit()
 
     def run_default(self, default_setup_file: str = "assets/default.json"):
         if not os.path.isfile(default_setup_file):
@@ -228,9 +224,9 @@ class FIST:
                             clock_power_driven=param[9],
                             congestion_effort=param[10],
                             uniform_density=param[11])
-            ppa = runner.run()
+            # ppa = runner.run()
             print(os.getcwd())
-            self.runParser.update_result(param, ppa)
+            # self.runParser.update_result(param, ppa)
             all_param = clusters[idx].generate_all()
             print("Cluster id {}".format(idx))
             print(params)
