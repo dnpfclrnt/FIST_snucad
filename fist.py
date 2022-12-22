@@ -172,6 +172,7 @@ class FIST:
                                                    weight=weight,
                                                    prev_data=True)
             self.feature_importance = feature_importance.gen_feature_importance(tune_target)
+            print(self.feature_importance)
             exit()
 
         self.cluster_gen = ClusterGen(self.feature_importance,
