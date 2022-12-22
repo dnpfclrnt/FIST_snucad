@@ -21,7 +21,7 @@ class PrevRunParser:
         self.prev_runs = []
         for param_str in self.prev_ppa.keys():
             run = self.prev_ppa[param_str]
-            param_set = "_".split(param_str)
+            param_set = param_str.split('_')
             label = [run["power"], run["wns"], run["tns"], run["area"], run["wire_length"]]
             print(run)
             print(param_str)
