@@ -25,10 +25,6 @@ class PrevRunParser:
             label = [run["power"], run["wns"], run["tns"], run["area"], run["wire_length"]]
             for i in range(len(label)):
                 label[i] = float(label[i])
-            print("label")
-            print(label)
-            print("weight")
-            print(weight)
             wa = weight[0] * label[0]
             wa += weight[1] * label[1]
             wa += weight[2] * label[2]

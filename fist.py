@@ -172,10 +172,6 @@ class FIST:
                                                    weight=weight,
                                                    prev_data=True)
             self.feature_importance = feature_importance.gen_feature_importance(tune_target)
-            print("===================")
-            print("Feature importance")
-            print(self.feature_importance)
-            exit()
 
         self.cluster_gen = ClusterGen(self.feature_importance,
                                       param_setup_json,
@@ -195,6 +191,10 @@ class FIST:
         self.default_ppa = None
         print("Running default")
         self.run_default(default_dir)
+        print("===================")
+        print("Feature importance")
+        print(self.feature_importance)
+        exit()
 
     def run_default(self, default_setup_file: str = "assets/default.json"):
         if not os.path.isfile(default_setup_file):
