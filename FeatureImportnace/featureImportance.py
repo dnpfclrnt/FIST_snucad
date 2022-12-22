@@ -105,7 +105,7 @@ class PrevRunParser:
             print(score_arr)
             print(var)
             print(sum_var)
-            var += var
+            sum_var += var
             # sum_var += pow(var, 2)
         return sum_var
 
