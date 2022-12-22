@@ -74,8 +74,8 @@ class PrevRunParser:
         encoded = {}
         for run in runs:
             param_set = run[0]
+            print(param_set)
             enc = self.encode(param_set, idx)
-            print(enc)
             if enc in encoded.keys():
                 if mode == "power":
                     encoded[enc].append(run[1][0])
