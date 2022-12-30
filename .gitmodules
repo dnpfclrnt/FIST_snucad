@@ -1,0 +1,3 @@
+[submodule "tools/snucad_placement_runner"]
+	path = tools/snucad_placement_runner
+	url = git@github.com:dnpfclrnt/snucad_placement_runner.git

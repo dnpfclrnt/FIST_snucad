@@ -1,0 +1,14 @@
+{
+	"CLOCK_PERIOD":500,
+	"CORE_UTIL":65,
+	"set_max_fanout":16,
+	"set_max_transition":120,
+	"set_max_capacitance":12,
+	"eco_max_distance":10,
+	"max_density":60,
+	"wire_length_opt":"medium",
+	"timing_effort":"medium",
+	"clock_power_driven":"standard",
+	"congestion_effort":"auto",
+	"uniform_density":"false"
+}
